@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/dependabot/gitlab/version"
+require_relative "lib/dependabot_gitlab/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "dependabot-gitlab"
-  spec.version       = Dependabot::Gitlab::VERSION
+  spec.name          = "dependabot_gitlab"
+  spec.version       = DependabotGitlab::VERSION
   spec.authors       = ["storozhenkoalex"]
   spec.email         = ["storozhenkoalex@yandex.ru"]
 
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-  spec.files = %w(lib/dependabot/gitlab/updater.rb)
+  spec.files = %w(lib/dependabot_gitlab.rb lib/dependabot_gitlab/updater.rb lib/dependabot_gitlab/version.rb lib/dependabot_gitlab/core_functions.rb)
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"

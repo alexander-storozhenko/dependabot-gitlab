@@ -1,25 +1,25 @@
-# Dependabot::Gitlab
+# DependabotGitlab
 ## Useful Dependabot::Core wrapper for gitlab
 ### Install
-``` gem install 'dependabot-gitlab' ```
+``` gem install 'dependabot_gitlab' ```
 
 or in your Gemfile
 
-``` gem 'dependabot-gitlab' ```
+``` gem 'dependabot_gitlab' ```
 
 ### Example
 
 ```ruby
-require 'dependabot-gitlab'
+require 'dependabot_gitlab'
 
 credentials = [
     {
-        "username" => "x-access-token", 
-        "password" => "**** ACCESS_TOKEN OR PASSWORD ****"
+        "username" => "x-access-token", # or username 
+        "password" => "**** Github access token or password ****"
     },
     {
         "username" => "storozhenko",
-        "password" => '*************' # A GitLab access token with API permission
+        "password" => '****** GitLab access token with API permission *******' 
     }
 ]
 
@@ -31,7 +31,7 @@ settings = {
     assignees: nil,
 }
 
-updater = Dependabot::Gitlab::Updater.new(credentials, settings)
+updater = DependabotGitlab::Updater.new(credentials, settings)
 updater.update_dependencies create_merge_request: true
 
 ```

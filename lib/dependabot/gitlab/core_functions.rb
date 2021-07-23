@@ -2,25 +2,34 @@ module Dependabot
   module Gitlab
     class CoreFunctions
 
+      DEFAULT_HOST_NAME = 'gitlab.com'.freeze
+      DEFAULT_PROVIDER = 'gitlab'.freeze
+      DEFAULT_API_ENDPOINT = 'https://gitlab.com/api/v4'.freeze
+      DEFAULT_BRANCH = 'master'.freeze
+
       def initialize(credentials, settings)
         @settings = settings
         @credentials = credentials
       end
 
-      def dependencies_info(create_merge_request: false)
+      def dependencies_info(create_merge_request)
         messages = []
 
-        files = fetcher.files
+        init_source
+
+        file_fetcher = fetcher
+        files = file_fetcher.files
 
         dependencies = parser(files).parse
-        commit = fetcher.commit
+
+        commit = file_fetcher.commit
 
         dependencies.select(&:top_level?).each do |dep|
           checker = checker(files, dep)
 
           next if checker.up_to_date?
 
-          requirements_to_unlock = unlock_requirements
+          requirements_to_unlock = unlock_requirements(checker)
 
           next if requirements_to_unlock == :update_not_possible
 
@@ -33,7 +42,7 @@ module Dependabot
 
           create_mr(updated_files, updated_deps, commit) if create_merge_request
 
-          messages << {name: dep.name, old_version: version, new_version: updater.dependencies.first.version}
+          messages << {name: dep.name, old_version: dep.version, new_version: updater.dependencies.first.version}
         end
 
         messages.join
@@ -41,14 +50,14 @@ module Dependabot
 
       private
 
-      def source
+      def init_source
         @source = Dependabot::Source.new(
-            provider: 'gitlab',
-            hostname: 'gitlab.com',
-            api_endpoint: "https://gitlab.com/api/v4",
+            provider: @settings[:provider] || DEFAULT_PROVIDER,
+            hostname: @settings[:hostname] || DEFAULT_HOST_NAME,
+            api_endpoint: @settings[:api_endpoint] || DEFAULT_API_ENDPOINT,
             repo: @settings[:repo],
             directory: @settings[:dir],
-            branch: @settings[:branch]
+            branch: @settings[:branch] || DEFAULT_BRANCH
         )
       end
 
@@ -64,7 +73,7 @@ module Dependabot
             dependency_files: files,
             source: @source,
             credentials: @credentials,
-        )
+            )
       end
 
       def checker(files, dep)
@@ -75,7 +84,7 @@ module Dependabot
         )
       end
 
-      def unlock_requirements
+      def unlock_requirements(checker)
         if !checker.requirements_unlocked_or_can_be?
           if checker.can_update?(requirements_to_unlock: :none) then
             :none
@@ -107,9 +116,9 @@ module Dependabot
             files: updated_files,
             credentials: @credentials,
             assignees: @settings[:assignees],
-            author_details: @settings[:author_details] || { name: "Dependabot", email: "no-reply@github.com" },
+            author_details: @settings[:author_details] || {name: "Dependabot", email: "no-reply@github.com"},
             label_language: true,
-            )
+        )
 
         pr_creator.create
       end

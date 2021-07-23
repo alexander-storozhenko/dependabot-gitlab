@@ -1,5 +1,13 @@
-require_relative 'core_functions'
 
+require "dependabot/file_fetchers"
+require "dependabot/file_parsers"
+require "dependabot/update_checkers"
+require "dependabot/file_updaters"
+require "dependabot/pull_request_creator"
+require "dependabot/omnibus"
+require 'gitlab'
+
+require_relative 'core_functions'
 module Dependabot
   module Gitlab
     class Updater

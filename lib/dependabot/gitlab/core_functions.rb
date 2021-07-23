@@ -45,7 +45,7 @@ module Dependabot
         @source = Dependabot::Source.new(
             provider: 'gitlab',
             hostname: 'gitlab.com',
-            api_endpoint: "https://#gitlab.com/api/v4",
+            api_endpoint: "https://gitlab.com/api/v4",
             repo: @settings[:repo],
             directory: @settings[:dir],
             branch: @settings[:branch]

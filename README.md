@@ -1,5 +1,12 @@
 # Dependabot::Gitlab
 ## Useful Dependabot::Core wrapper for gitlab
+### Install
+``` gem install 'dependabot-gitlab' ```
+
+or in your Gemfile
+
+``` gem 'dependabot-gitlab' ```
+
 ### Example
 
 ```ruby
@@ -7,10 +14,12 @@ require 'dependabot-gitlab'
 
 credentials = [
     {
-        "type" => "git_source",
-        "host" => "github.com",
         "username" => "x-access-token", 
         "password" => "**** ACCESS_TOKEN OR PASSWORD ****"
+    },
+    {
+        "username" => "storozhenko",
+        "password" => '*************' # A GitLab access token with API permission
     }
 ]
 
